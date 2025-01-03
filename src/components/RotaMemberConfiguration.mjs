@@ -11,7 +11,7 @@ export default {
         <label class="form-label required">Staff on rota</label>
         <div class="row justify-content-center g-2 mb-3" v-for="(rotaMember, index) in rotaMembers" :key="rotaMember.id">
             <div class="col">
-                <input type="text" class="form-control" :class="{ 'is-invalid': rotaMember.name === '' }" placeholder="Name" v-model="rotaMember.name" />
+                <input type="text" class="form-control" :class="{ 'is-invalid': rotaMember.name === '' }" placeholder="Name" v-model="rotaMember.name" required />
             </div>
             <div class="col d-flex justify-content-center">
                 <div class="btn-group" role="group">

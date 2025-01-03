@@ -38,6 +38,8 @@ export default {
     data: () => ({ memberMap, rotaMembers, numberOfPeople: 1, results: null }),
     methods: {
         generate(event) {
+            if (!event.target.checkValidity()) return;
+            event.preventDefault();
             // const data = new FormData(event.target);
             this.results = generateRota(this.numberOfPeople);
         }
@@ -62,7 +64,7 @@ export default {
                         <div class="card-header">
                             <h3 class="card-title">Configure rota</h3>
                         </div>
-                        <form @submit.prevent="generate">
+                        <form @submit="generate">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-12">
