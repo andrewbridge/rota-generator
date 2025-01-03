@@ -1,9 +1,8 @@
 import Generator from "../pages/Generator.mjs";
-import Configure from "../pages/Configure.mjs";
 import { activeHash, activeRoute, getRoute } from "../services/routes.mjs";
 
 export default {
-    data: () => ({ Generator: getRoute(Generator), Configure: getRoute(Configure) }),
+    data: () => ({ Generator: getRoute(Generator) }),
     computed: {
         activeRoute() {
             return activeRoute.value;
