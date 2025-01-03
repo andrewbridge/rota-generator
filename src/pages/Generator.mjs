@@ -1,3 +1,4 @@
+import RotaMemberConfiguration from "../components/RotaMemberConfiguration.mjs";
 import {css} from "../deps/goober.mjs";
 import { memberMap, rotaMembers } from "../services/data.mjs";
 
@@ -32,6 +33,8 @@ const generateRota = (peoplePerDay) => {
 const styles = css``;
 
 export default {
+    name: 'Generator',
+    components: { RotaMemberConfiguration },
     data: () => ({ memberMap, rotaMembers, numberOfPeople: 1, results: null }),
     methods: {
         generate(event) {
@@ -62,6 +65,11 @@ export default {
                         <form @submit.prevent="generate">
                             <div class="card-body">
                                 <div class="row">
+                                    <div class="col-12">
+                                        <div class="mb-3">
+                                            <RotaMemberConfiguration />
+                                        </div>
+                                    </div>
                                     <div class="col-12">
                                         <div class="mb-3">
                                             <label class="form-label required">Number of people on each day</label>
