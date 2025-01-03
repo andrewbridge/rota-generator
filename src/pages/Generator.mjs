@@ -4,24 +4,42 @@ import { memberMap, rotaMembers } from "../services/data.mjs";
 
 const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const generateRota = (peoplePerDay) => {
+const generateWeeklyRota = (peoplePerDay) => {
     const rota = {};
     const allocationCount = new Map();
 
+    for (const day of days) {
+        rota[day] = [];
+    }
+
     // Initialize allocation count for each member
-    rotaMembers.value.forEach(member => {
+    for (const member of rotaMembers.value) {
         allocationCount.set(member.id, 0);
-    });
+    }
+
+    const filteredMembersByDay = days.reduce((acc, _, index) => {
+        acc[index] = rotaMembers.value.filter(member => member.days.includes(String(index)));
+        return acc;
+    }, {});
+
+    const sortedDaysByAvailability = days
+        .map((_, index) => ({
+            day: index,
+            availableMembers: filteredMembersByDay[index].length
+        }))
+        .filter(day => day.availableMembers > 0)
+        .sort((a, b) => a.availableMembers - b.availableMembers)
+        .map(({ day }) => day);
 
     // Iterate through each day of the week (0-6)
-    for (let day = 1; day < 6; day++) {
-        const availableMembers = rotaMembers.value.filter(member => member.days.includes(String(day)));
+    for (const day of sortedDaysByAvailability) {
+        const membersAvailableForDay = filteredMembersByDay[day];
         
         // Sort available members by the number of times they have been allocated
-        availableMembers.sort((a, b) => allocationCount.get(a.id) - allocationCount.get(b.id));
+        membersAvailableForDay.sort((a, b) => allocationCount.get(a.id) - allocationCount.get(b.id));
 
         // Allocate members to the rota for the current day
-        rota[days[day]] = availableMembers.slice(0, peoplePerDay).map(member => {
+        rota[days[day]] = membersAvailableForDay.slice(0, peoplePerDay).map(member => {
             allocationCount.set(member.id, allocationCount.get(member.id) + 1);
             return member.id;
         });
@@ -41,7 +59,7 @@ export default {
             if (!event.target.checkValidity()) return;
             event.preventDefault();
             // const data = new FormData(event.target);
-            this.results = generateRota(this.numberOfPeople);
+            this.results = generateWeeklyRota(this.numberOfPeople);
         }
     },
     template: `<div class="page-header">
