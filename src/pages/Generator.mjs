@@ -34,15 +34,42 @@ const generateWeeklyRota = (peoplePerDay) => {
     // Iterate through each day of the week (0-6)
     for (const day of sortedDaysByAvailability) {
         const membersAvailableForDay = filteredMembersByDay[day];
-        
+
         // Sort available members by the number of times they have been allocated
         membersAvailableForDay.sort((a, b) => allocationCount.get(a.id) - allocationCount.get(b.id));
 
-        // Allocate members to the rota for the current day
-        rota[days[day]] = membersAvailableForDay.slice(0, peoplePerDay).map(member => {
-            allocationCount.set(member.id, allocationCount.get(member.id) + 1);
-            return member.id;
-        });
+        if (membersAvailableForDay.length === 0) {
+            rota[days[day]] = [];
+            continue;
+        }
+
+        // Group memberAvailableForDay into an array of arrays grouped by allocationCount
+        let currentAllocationCount = allocationCount.get(membersAvailableForDay[0].id);
+        const groupedMembers = [];
+        let currentGroup = [];
+        for (const member of membersAvailableForDay) {
+            if (allocationCount.get(member.id) !== currentAllocationCount) {
+                groupedMembers.push(currentGroup);
+                currentGroup = [];
+                currentAllocationCount = allocationCount.get(member.id);
+            }
+            currentGroup.push(member);
+        }
+
+        if (currentGroup.length > 0) {
+            groupedMembers.push(currentGroup);
+        }
+
+        while (rota[days[day]].length < peoplePerDay && groupedMembers.length > 0) {
+            // Randomly take an item from the first array in groupedMembers
+            const randomIndex = Math.floor(Math.random() * groupedMembers[0].length);
+            const randomMember = groupedMembers[0].splice(randomIndex, 1)[0];
+            rota[days[day]].push(randomMember.id);
+            allocationCount.set(randomMember.id, allocationCount.get(randomMember.id) + 1);
+            if (groupedMembers[0].length === 0) {
+                groupedMembers.shift();
+            }
+        }
     }
 
     return rota;
