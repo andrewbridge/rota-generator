@@ -1,9 +1,11 @@
 import { ref } from "../deps/vue.mjs";
+import Viewer from "../pages/Viewer.mjs";
 import Generator from "../pages/Generator.mjs";
 import { rotaMembers } from "./data.mjs";
 
 export const routes = {
-    '/': Generator,
+    '/': Viewer,
+    '/old': Generator,
 };
 
 export const routeMap = new WeakMap();
