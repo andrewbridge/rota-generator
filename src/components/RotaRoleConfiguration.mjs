@@ -1,35 +1,41 @@
-import { addRotaRole, rotaRoles, rotaMembers, removeRotaRole } from "../services/data.mjs";
+import { createRole } from "../models.mjs";
 import SelectGroup from "./SelectGroup.mjs";
 
 export default {
     name: 'RotaRoleConfiguration',
     components: { SelectGroup },
-    data: () => ({ rotaRoles, rotaMembers }),
+    emits: ['update:modelValue'],
+    props: ['modelValue', 'members'],
     computed: {
         memberOptions() {
             const memberMap = {};
-            for (const member of this.rotaMembers) {
+            for (const member of this.members) {
                 memberMap[member.id] = member.name;
             }
             return memberMap;
         },
         memberCount() {
-            return this.rotaMembers.length;
+            return this.members.length;
         }
     },
     methods: {
-        addRotaRole,
-        removeRotaRole,
+        addRotaRole() {
+            this.$emit('update:modelValue', [...this.modelValue, createRole()]);
+        },
+        removeRotaRole(id) {
+            this.$emit('update:modelValue', this.modelValue.filter(role => role.id !== id));
+        },
         areAllMembersSelected(rotaRole) {
             return rotaRole.members.length === this.memberCount;
         },
         toggleSelectAllMembers(rotaRole) {
-            rotaRole.members = this.areAllMembersSelected(rotaRole) ? [] : this.rotaMembers.map(member => member.id);
+            rotaRole.members = this.areAllMembersSelected(rotaRole) ? [] : this.members.map(member => member.id);
+            this.$emit('update:modelValue', this.modelValue);
         }
     },
     template: /*html*/`
         <label class="form-label required">Roles in rota</label>
-        <fieldset class="form-fieldset row justify-content-center g-2 mb-3" v-for="(rotaRole, index) in rotaRoles" :key="rotaRole.id">
+        <fieldset class="form-fieldset row justify-content-center g-2 mb-3" v-for="(rotaRole, index) in modelValue" :key="rotaRole.id">
             <div class="col-11">
                 <div class="row g-2">
                     <div class="col-6">
