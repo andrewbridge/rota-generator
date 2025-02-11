@@ -1,6 +1,10 @@
 import { createMember, createRole } from "../models.mjs";
 
+/** @typedef {import('../types').Configuration} Configuration */
+
 const compressionMap = [
+    "uid",
+    "name",
     "members",
     "roles",
     "avoidanceRule",
@@ -35,7 +39,8 @@ export const arrayToObject = (array, map) => {
     return object;
 }
 
-export const compress = (data) => {
+/** @type {(configuration: Configuration) => Promise<string>} */
+export const compress = async (data) => {
     const membersMap = new Map();
     const membersArray = data.members.map((member, index) => {
         membersMap.set(member.id, index);
@@ -57,10 +62,14 @@ export const compress = (data) => {
     for (const key of compressionMap) {
         array.push(dupeData[key]);
     }
-    return array;
+    const { compressToEncodedURIComponent } = await import('../deps/lz-string.mjs');
+    return compressToEncodedURIComponent(JSON.stringify(array));
 }
 
-export const decompress = (array) => {
+/** @type {(compressedData: string) => Promise<Configuration>} */
+export const decompress = async (compressedData) => {
+    const { decompressFromEncodedURIComponent } = await import('../deps/lz-string.mjs');
+    const array = JSON.parse(decompressFromEncodedURIComponent(compressedData));
     const data = {};
     let members = null;
     for (const [index, key] of compressionMap.entries()) {

@@ -1,34 +1,43 @@
-import { addRotaMember, rotaMembers, removeRotaMember } from "../services/data.mjs";
+import { createMember } from "../models.mjs";
 
 export default {
     name: 'RotaMemberConfiguration',
-    data: () => ({ rotaMembers }),
+    emits: ['update:modelValue'],
+    props: ['modelValue'],
     methods: {
-        addRotaMember,
-        removeRotaMember
+        addRotaMember() {
+            this.$emit('update:modelValue', [...this.modelValue, createMember()]);
+        },
+        removeRotaMember(id) {
+            this.$emit('update:modelValue', this.modelValue.filter(member => member.id !== id));
+        }
     },
     template: /*html*/`
         <label class="form-label required">Staff on rota</label>
-        <div class="row justify-content-center g-2 mb-3" v-for="(rotaMember, index) in rotaMembers" :key="rotaMember.id">
-            <div class="col">
-                <input type="text" class="form-control" :class="{ 'is-invalid': rotaMember.name === '' }" placeholder="Name" v-model="rotaMember.name" required />
-            </div>
-            <div class="col d-flex justify-content-center">
-                <div class="btn-group" role="group">
-                    <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-0'" value="0" v-model="rotaMember.days">
-                    <label :for="'row-' + index + '-staff-days-0'" type="button" class="btn">Sun</label>
-                    <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-1'" value="1" v-model="rotaMember.days">
-                    <label :for="'row-' + index + '-staff-days-1'" type="button" class="btn">Mon</label>
-                    <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-2'" value="2" v-model="rotaMember.days">
-                    <label :for="'row-' + index + '-staff-days-2'" type="button" class="btn">Tue</label>
-                    <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-3'" value="3" v-model="rotaMember.days">
-                    <label :for="'row-' + index + '-staff-days-3'" type="button" class="btn">Wed</label>
-                    <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-4'" value="4" v-model="rotaMember.days">
-                    <label :for="'row-' + index + '-staff-days-4'" type="button" class="btn">Thu</label>
-                    <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-5'" value="5" v-model="rotaMember.days">
-                    <label :for="'row-' + index + '-staff-days-5'" type="button" class="btn">Fri</label>
-                    <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-6'" value="6" v-model="rotaMember.days">
-                    <label :for="'row-' + index + '-staff-days-6'" type="button" class="btn">Sat</label>
+        <fieldset class="form-fieldset row justify-content-center g-2 mb-3" v-for="(rotaMember, index) in modelValue" :key="rotaMember.id">
+            <div class="col-11">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <input type="text" class="form-control" :class="{ 'is-invalid': rotaMember.name === '' }" placeholder="Name" v-model="rotaMember.name" required />
+                    </div>
+                    <div class="col-12">
+                        <div class="btn-group" role="group">
+                            <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-0'" value="0" v-model="rotaMember.days">
+                            <label :for="'row-' + index + '-staff-days-0'" type="button" class="btn">Sun</label>
+                            <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-1'" value="1" v-model="rotaMember.days">
+                            <label :for="'row-' + index + '-staff-days-1'" type="button" class="btn">Mon</label>
+                            <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-2'" value="2" v-model="rotaMember.days">
+                            <label :for="'row-' + index + '-staff-days-2'" type="button" class="btn">Tue</label>
+                            <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-3'" value="3" v-model="rotaMember.days">
+                            <label :for="'row-' + index + '-staff-days-3'" type="button" class="btn">Wed</label>
+                            <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-4'" value="4" v-model="rotaMember.days">
+                            <label :for="'row-' + index + '-staff-days-4'" type="button" class="btn">Thu</label>
+                            <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-5'" value="5" v-model="rotaMember.days">
+                            <label :for="'row-' + index + '-staff-days-5'" type="button" class="btn">Fri</label>
+                            <input type="checkbox" class="btn-check" name="staff-days" autocomplete="off" :id="'row-' + index + '-staff-days-6'" value="6" v-model="rotaMember.days">
+                            <label :for="'row-' + index + '-staff-days-6'" type="button" class="btn">Sat</label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-1">
@@ -38,7 +47,7 @@ export default {
                     </svg>
                 </button>
             </div>
-        </div>
+        </fieldset>
         <div class="d-flex justify-content-center">
             <button class="btn btn-icon" @click="addRotaMember">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
