@@ -39,6 +39,7 @@ export default {
             return this.selectedWeek === 0;
         },
         isLast() {
+            if (!this.generatedRotas) return true;
             return this.selectedWeek === this.generatedRotas.length - 1;
         },
     },
