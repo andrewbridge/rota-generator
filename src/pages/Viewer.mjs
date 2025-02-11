@@ -67,6 +67,30 @@ export default {
                 console.debug(error);
             }
         },
+        async downloadRotas() {
+            const { XLSX } = await import('../deps/xlsx.mjs');
+            var workbook = XLSX.utils.book_new();
+            for (let week = 0; week < this.generatedRotas.length; week++) {
+                const weekRota = this.generatedRotas[week];
+                const data = [
+                    ["Member", ...Object.keys(weekRota)],
+                ];
+                for (const member of this.rotaMembers) {
+                    const row = [member.name];
+                    for (const allocatedStaff of Object.values(weekRota)) {
+                        let cell = "";
+                        if (member.id in allocatedStaff) {
+                            cell = this.roleMap.get(allocatedStaff[member.id]).name;
+                        }
+                        row.push(cell);
+                    }
+                    data.push(row);
+                }
+                const sheet = XLSX.utils.aoa_to_sheet(data);
+                XLSX.utils.book_append_sheet(workbook, sheet, 'Week ' + (week + 1));
+            }
+            XLSX.writeFile(workbook, `${this.selectedConfiguration.name} - ${new Date().toISOString().substring(0, 10)}.xlsx`);
+        },
         nextWeek() {
             if (!this.isLast) {
                 this.selectedWeek = Math.min(this.selectedWeek + 1, this.generatedRotas.length - 1);
@@ -112,6 +136,12 @@ export default {
                                                 <button class="btn btn-icon" @click="generateRotas" aria-label="Refresh rotas">
                                                     <!-- Download SVG icon from http://tabler.io/icons/icon/refresh -->
                                                     <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-refresh"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>
+                                                </button>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button class="btn btn-icon" @click="downloadRotas" aria-label="Download rotas">
+                                                    <!-- Download SVG icon from http://tabler.io/icons/icon/download -->
+                                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-download"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><path d="M7 11l5 5l5 -5" /><path d="M12 4l0 12" /></svg>
                                                 </button>
                                             </div>
                                             <div class="col-auto">
