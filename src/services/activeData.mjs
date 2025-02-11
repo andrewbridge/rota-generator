@@ -36,7 +36,6 @@ export const generatedRotas = ref(null);
 persistRef(generatedRotas, 'ROTA_GENERATOR_GENERATED_ROTAS', true);
 
 watch(selectedConfigurationUid, (newValue, oldValue) => {
-    debugger;
     if (typeof oldValue === 'string' && oldValue !== newValue && !configurationMap.value.has(oldValue)) {
         generatedRotas.value = null;
     }
