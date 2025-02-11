@@ -1,0 +1,1 @@
+export * as XLSX from 'https://unpkg.com/xlsx/xlsx.mjs';
