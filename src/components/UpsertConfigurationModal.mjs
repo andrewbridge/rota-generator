@@ -79,7 +79,7 @@ export default {
                             <select class="form-select" v-model="avoidanceRule">
                                 <option value="${AVOIDANCE_RULES.NONE}">Staff can have the same shifts each week</option>
                                 <option value="${AVOIDANCE_RULES.AVOID_CONSECUTIVE_ROLES}">Staff can have the same shifts for different roles each week</option>
-                                <option value="${AVOIDANCE_RULES.AVOID_CONSECUTIVE_ROLES}">Avoid the same shift in concurrent weeks</option>
+                                <option value="${AVOIDANCE_RULES.AVOID_CONSECUTIVE_SHIFTS}">Avoid the same shift in concurrent weeks</option>
                                 <option value="${AVOIDANCE_RULES.AVOID_DUPLICATE_SHIFTS}">Avoid the same shift being scheduled twice</option>
                             </select>
                         </div>
