@@ -17,7 +17,6 @@ export default {
             const url = new URL(window.location.href);
             const searchParams = new URLSearchParams();
             searchParams.set('configuration', shareData);
-            url.pathname = '';
             url.hash = `#/import?${searchParams.toString()}`;
             navigator.clipboard.writeText(url.href);
             this.shareLinkCopied = configuration.uid;
