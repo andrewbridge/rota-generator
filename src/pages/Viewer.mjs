@@ -52,16 +52,19 @@ export default {
                 let errorData = {
                     title: 'Error',
                     message: 'An error occurred while generating the rota.',
+                    ctaText: 'Go to configuration',
                 };
                 if (error instanceof InvalidConfigurationError) {
                     errorData = {
                         title: 'Invalid configuration',
                         message: 'The rota configuration needs at least one member and one role.',
+                        ctaText: 'Fix configurations',
                     };
                 } else if (error instanceof NoConfigurationError) {
                     errorData = {
                         title: 'Setup required',
                         message: 'Please create a rota configuration before viewing the rota.',
+                        ctaText: 'Create a configuration',
                     };
                 }
                 this.error = errorData;
@@ -109,7 +112,7 @@ export default {
                 <div class="row row-cards">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-body">
+                            <div class="card-body" v-if="!error">
                                 <div class="d-flex">
                                     <ul class="pagination mb-0">
                                         <li class="page-item" :class="{ disabled: isFirst }">
@@ -161,6 +164,9 @@ export default {
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon mb-2 text-warning icon-lg"><path d="M12 9v4"></path><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"></path><path d="M12 16h.01"></path></svg>
                                     <h3>{{error.title}}</h3>
                                     <div class="text-secondary">{{error.message}}</div>
+                                    <a class="btn btn-primary mt-3" href="#/configure" aria-label="Go to rota configuration">
+                                        {{error.ctaText}}
+                                    </a>
                                 </div>
                                 <table class="table table-vcenter card-table" v-else>
                                     <thead>
